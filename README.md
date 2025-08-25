@@ -32,3 +32,9 @@ Press enter to accept your choice
 3. run
 
     > `python3 game.py`
+
+## Credits
+
+Card sprites drawn by [Aspecs Ganimg](https://aspecsgaming.itch.io/mini-pixel-playing-cards)
+
+Font designed by [Sarah Cadigan-Fried](https://github.com/scfried/soft-type-jersey)
