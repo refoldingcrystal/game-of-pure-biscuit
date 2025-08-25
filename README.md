@@ -2,7 +2,7 @@
 
 My entry for Brackey Game Jam 2025.2
 
-Game is basically implementation of GOPS (Game of Pure Strategy), but ith biscuits!
+Game is basically a implementation of GOPS (Game of Pure Strategy), but with biscuits!
 
 ## How to play
 
@@ -15,3 +15,14 @@ Objective: Get the most biscuits
     3. Player who choose higher card gets all of the biscuits
         1. If both cards have the same value, cards are discarded and prize increases
     4. Chosen cards are discarded
+
+## How to run
+
+1. install python
+2. install pygame
+
+    > `pip3 install pygame`
+
+3. run
+
+    > `python3 game.py`
