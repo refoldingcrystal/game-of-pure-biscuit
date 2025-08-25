@@ -1,3 +1,4 @@
+import math
 import sys
 import pygame
 import random
@@ -83,6 +84,15 @@ class Opponent:
         value = random.choice(list(self.deck))
         self.deck = [c for c in self.deck if c != value]
         return value
+    
+class Biscuits:
+    def __init__(self):
+        self.biscuits = range(1, 14)
+
+    def randomize_biscuits(self):
+        value = random.choice(list(self.biscuits))
+        self.biscuits = [b for b in self.biscuits if b != value]
+        return value
 
 class Scores:
     def __init__(self):
@@ -90,35 +100,84 @@ class Scores:
         self.opp_score = 0
 
 class Duel:
-    def __init__(self, card, opp_card):
+    def __init__(self, card, opp_card, biscuits, particles):
+        self.particles = particles
         self.c = card
         self.oc = opp_card
         self.card = load_image(f'cards/{str(card)}-P.png', scale=2)
         self.opp_card = load_image(f'cards/{str(opp_card)}-D.png', scale=2)
-        self.prize = 69
+        self.prize = biscuits
         self.frame = 0
 
+        self.pos = 50
+        self.opp_pos = 194
+
         self.y_pos = 36
+        self.tie = False
+        self.winner = None
 
     def result(self, scores):
         if self.c != self.oc:
             if self.c > self.oc:
                 scores.score += self.prize
+                self.winner = True
             else:
                 scores.opp_score += self.prize
+                self.winner = False
             return True
+        self.tie = True
         return False
 
     def update(self):
-        if self.frame > 60:
+        if self.frame < 60:
+            pass
+        elif self.frame < 78:
+            if not self.tie:
+                self.pos += 4
+                self.opp_pos -= 4
+        elif self.frame > 100:
             return True
 
+        # for i in range(5):
+        #     self.particles.append(Particle((random.random() * 76 + 194, random.random() * 108 + self.y_pos), animation_speed=random.randint(3, 6), angle=0))
         self.frame += 1
         return False
 
     def render(self, surf):
-        surf.blit(self.card, (50, self.y_pos))
-        surf.blit(self.opp_card, (194, self.y_pos))
+        if self.winner:
+            surf.blit(self.opp_card, (self.opp_pos, self.y_pos))
+            surf.blit(self.card, (self.pos, self.y_pos))
+        else:
+            surf.blit(self.card, (self.pos, self.y_pos))
+            surf.blit(self.opp_card, (self.opp_pos, self.y_pos))
+            
+
+class Particle:
+    def __init__(self, pos, animation_speed=5, angle=math.pi):
+        self.pos = list(pos)
+        self.animation_speed = animation_speed
+        self.color = (255, 255, 255)
+        self.size = 10
+        self.speed = 3
+        self.frame = 0
+        self.angle = angle
+        self.velocity = (math.cos(self.angle) * self.speed, math.sin(self.angle) * self.speed)
+    
+    def update(self):
+        self.pos[0] += self.velocity[0]
+        self.pos[1] += self.velocity[1]
+        if self.frame % self.animation_speed:
+            self.size -= 1
+
+        self.frame += 1
+        if self.frame > 30:
+            return True
+        return False
+
+    def render(self, surf):
+        rect = (*self.pos, self.size, self.size)
+        pygame.draw.rect(surf, self.color, rect)
+
 
 class Game:
     def __init__(self):
@@ -131,9 +190,11 @@ class Game:
         self.scores = Scores()
         self.deck = Deck()
         self.opponent = Opponent()
+        self.biscuits = Biscuits()
         self.choosen_card = None
 
         self.duel = None
+        self.particles = []
 
     def run(self):
         while True:
@@ -159,11 +220,18 @@ class Game:
                 # Render deck + UI
                 self.choosen_card = self.deck.render(self.display)
                 if self.choosen_card:
-                    self.duel = Duel(self.choosen_card, self.opponent.choose_card(self.choosen_card))
+                    self.duel = Duel(self.choosen_card, self.opponent.choose_card(self.choosen_card),
+                                     self.biscuits.randomize_biscuits(), self.particles)
                     if self.duel.result(self.scores):
                         print(self.scores.score, self.scores.opp_score)
                     else:
                         print("tie!")
+
+            for p in self.particles.copy():
+                p.render(self.display)
+                kill = p.update()
+                if kill:
+                    self.particles.remove(p)
 
             self.screen.blit(pygame.transform.scale(self.display, self.screen.get_size()), (0, 0))
             pygame.display.update()

@@ -16,6 +16,12 @@ Objective: Get the most biscuits
         1. If both cards have the same value, cards are discarded and prize increases
     4. Chosen cards are discarded
 
+## Controls
+
+Use arrows to navigate menus and to choose cards
+
+Press enter to accept your choice
+
 ## How to run
 
 1. install python
