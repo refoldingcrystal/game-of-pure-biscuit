@@ -8,7 +8,14 @@ def close():
     sys.exit()
 
 def draw_background(surf):
-    surf.fill((0x49, 0x5e, 0x29))
+    surf.fill((0x59, 0x85, 0x32))
+    tile_size = 10
+    for x in range(320 // tile_size + 1):
+        for y in range(180 // tile_size + 1):
+            if (x + y) % 2:
+                rect = (x * tile_size, y * tile_size, tile_size, tile_size)
+                color = (0x4f, 0x77, 0x2d)
+                pygame.draw.rect(surf, color, rect)
 
 def load_image(path, scale=1):
     image = pygame.image.load(path).convert_alpha()
@@ -71,7 +78,7 @@ class Deck:
                     c.pos = [card_pos(len(self.cards), j), c.pos[1]]
                 if not len(self.cards):
                     return choosen_card
-                self.selected = self.selected % len(self.cards)
+                self.selected = (self.selected - 1) % len(self.cards)
             else:
                 i += 1
         return choosen_card
@@ -79,9 +86,13 @@ class Deck:
 class Opponent:
     def __init__(self):
         self.deck = range(1, 14)
+        self.mode = 'inc'
 
     def choose_card(self, card):
-        value = random.choice(list(self.deck))
+        if self.mode == 'rand':
+            value = random.choice(list(self.deck))
+        elif self.mode == 'inc':
+            value = self.deck[0]
         self.deck = [c for c in self.deck if c != value]
         return value
     
@@ -98,6 +109,15 @@ class Scores:
     def __init__(self):
         self.score = 0
         self.opp_score = 0
+        self.font = pygame.font.Font("font/jersey.ttf", 40)
+
+    def render(self, surf):
+        text = self.font.render(str(self.score), False, (0, 0, 0))
+        opp_text = self.font.render(str(self.opp_score), False, (0, 0, 0))
+        rect = opp_text.get_rect()
+        rect.right = 308
+        surf.blit(text, (12, 0))
+        surf.blit(opp_text, rect)
 
 class Duel:
     def __init__(self, card, opp_card, biscuits, particles):
@@ -107,6 +127,7 @@ class Duel:
         self.card = load_image(f'cards/{str(card)}-P.png', scale=2)
         self.opp_card = load_image(f'cards/{str(opp_card)}-D.png', scale=2)
         self.prize = biscuits
+        print(f'biscuits {self.prize}')
         self.frame = 0
 
         self.pos = 50
@@ -183,8 +204,9 @@ class Game:
     def __init__(self):
         pygame.init()
 
-        self.screen = pygame.display.set_mode((1280, 720))
+        self.screen = pygame.display.set_mode((1280, 720), pygame.FULLSCREEN)
         self.display = pygame.surface.Surface((320, 180))
+        pygame.display.set_caption("Game of Pure Biscuit")
         self.clock = pygame.time.Clock()
 
         self.scores = Scores()
@@ -196,42 +218,59 @@ class Game:
         self.duel = None
         self.particles = []
 
+        self.paused = False
+        self.next_round_biscuits = 0
+
     def run(self):
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     close()
                 if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_RIGHT:
-                        self.deck.change_selected(1)
-                    if event.key == pygame.K_LEFT:
-                        self.deck.change_selected(-1)
-                    if event.key == pygame.K_RETURN:
-                        self.deck.select()
+                    if not self.paused:
+                        if event.key == pygame.K_RIGHT:
+                            self.deck.change_selected(1)
+                        if event.key == pygame.K_LEFT:
+                            self.deck.change_selected(-1)
+                        if event.key == pygame.K_RETURN:
+                            self.deck.select()
+                        if event.key == pygame.K_ESCAPE:
+                            self.paused = True
+                    else:
+                        if event.key == pygame.K_ESCAPE:
+                            self.paused = False
         
             draw_background(self.display)
 
-            if self.choosen_card:
-                # Render duel
-                if self.duel.update():
-                    self.choosen_card = None
-                self.duel.render(self.display)
-            else:
-                # Render deck + UI
-                self.choosen_card = self.deck.render(self.display)
+            if not self.paused:
                 if self.choosen_card:
-                    self.duel = Duel(self.choosen_card, self.opponent.choose_card(self.choosen_card),
-                                     self.biscuits.randomize_biscuits(), self.particles)
-                    if self.duel.result(self.scores):
-                        print(self.scores.score, self.scores.opp_score)
-                    else:
-                        print("tie!")
+                    # Render duel
+                    if self.duel.update():
+                        self.choosen_card = None
+                    self.duel.render(self.display)
+                else:
+                    # Render deck + UI
+                    self.choosen_card = self.deck.render(self.display)
+                    if self.choosen_card:
+                        print("old biscuits", self.next_round_biscuits)
+                        biscuits = self.biscuits.randomize_biscuits() + self.next_round_biscuits
+                        self.next_round_biscuits = 0
+                        self.duel = Duel(self.choosen_card,
+                                         self.opponent.choose_card(self.choosen_card),
+                                         biscuits, self.particles)
+                        if self.duel.result(self.scores):
+                            print(self.scores.score, self.scores.opp_score)
+                        else:
+                            self.next_round_biscuits = biscuits
+                            print("tie!")
+                    
+                    self.scores.render(self.display)
 
-            for p in self.particles.copy():
-                p.render(self.display)
-                kill = p.update()
-                if kill:
-                    self.particles.remove(p)
+                for p in self.particles.copy():
+                    p.render(self.display)
+                    kill = p.update()
+                    if kill:
+                        self.particles.remove(p)
 
             self.screen.blit(pygame.transform.scale(self.display, self.screen.get_size()), (0, 0))
             pygame.display.update()
