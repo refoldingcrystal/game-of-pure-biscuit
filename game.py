@@ -7,15 +7,31 @@ def close():
     pygame.quit()
     sys.exit()
 
-def draw_background(surf):
-    surf.fill((0x59, 0x85, 0x32))
-    tile_size = 10
-    for x in range(320 // tile_size + 1):
-        for y in range(180 // tile_size + 1):
-            if (x + y) % 2:
-                rect = (x * tile_size, y * tile_size, tile_size, tile_size)
-                color = (0x4f, 0x77, 0x2d)
-                pygame.draw.rect(surf, color, rect)
+class Background:
+    def __init__(self):
+        self.c1 = (0x59, 0x85, 0x32)
+        self.c2 = (0x4f, 0x77, 0x2d)
+        self.tile_size = 10
+
+    def render(self, surf):
+        surf.fill(self.c1)
+        for x in range(320 // self.tile_size + 1):
+            for y in range(180 // self.tile_size + 1):
+                if (x + y) % 2:
+                    rect = (x * self.tile_size, y * self.tile_size,
+                            self.tile_size, self.tile_size)
+                    pygame.draw.rect(surf, self.c2, rect)
+
+class PauseMenu:
+    def __init__(self, font):
+        self.font = font
+        self.text = self.font.render("Click any key to continue", False, (0, 0, 0))
+        self.rect = self.text.get_rect()
+        self.rect.left = 160 - self.rect.width // 2
+        self.rect.top = 150
+
+    def render(self, surf):
+        surf.blit(self.text, self.rect)
 
 def load_image(path, scale=1):
     image = pygame.image.load(path).convert_alpha()
@@ -106,10 +122,10 @@ class Biscuits:
         return value
 
 class Scores:
-    def __init__(self):
+    def __init__(self, font):
         self.score = 0
         self.opp_score = 0
-        self.font = pygame.font.Font("font/jersey.ttf", 40)
+        self.font = font
 
     def render(self, surf):
         text = self.font.render(str(self.score), False, (0, 0, 0))
@@ -204,12 +220,17 @@ class Game:
     def __init__(self):
         pygame.init()
 
-        self.screen = pygame.display.set_mode((1280, 720), pygame.FULLSCREEN)
+        # self.screen = pygame.display.set_mode((1280, 720), pygame.FULLSCREEN)
+        self.screen = pygame.display.set_mode((1280, 720))
         self.display = pygame.surface.Surface((320, 180))
         pygame.display.set_caption("Game of Pure Biscuit")
         self.clock = pygame.time.Clock()
+        self.font = pygame.font.Font("font/jersey.ttf", 40)
+        self.font_small = pygame.font.Font("font/jersey.ttf", 20)
 
-        self.scores = Scores()
+        self.pause_menu = PauseMenu(self.font_small)
+        self.background = Background()
+        self.scores = Scores(self.font)
         self.deck = Deck()
         self.opponent = Opponent()
         self.biscuits = Biscuits()
@@ -237,10 +258,9 @@ class Game:
                         if event.key == pygame.K_ESCAPE:
                             self.paused = True
                     else:
-                        if event.key == pygame.K_ESCAPE:
-                            self.paused = False
+                        self.paused = False
         
-            draw_background(self.display)
+            self.background.render(self.display)
 
             if not self.paused:
                 if self.choosen_card:
@@ -271,6 +291,9 @@ class Game:
                     kill = p.update()
                     if kill:
                         self.particles.remove(p)
+            else:
+                # Paused menu
+                self.pause_menu.render(self.display)
 
             self.screen.blit(pygame.transform.scale(self.display, self.screen.get_size()), (0, 0))
             pygame.display.update()
