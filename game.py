@@ -38,6 +38,14 @@ class Game:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     close()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    # Only DEBUG !!
+                    mouse_x, mouse_y = pygame.mouse.get_pos()
+                    display_width, display_height = self.display.get_size()
+                    screen_width, screen_height = self.screen.get_size()
+                    rel_x = int(mouse_x * display_width / screen_width)
+                    rel_y = int(mouse_y * display_height / screen_height)
+                    print(rel_x, rel_y)
                 if event.type == pygame.KEYDOWN:
                     if not self.paused:
                         if event.key == pygame.K_RIGHT:
