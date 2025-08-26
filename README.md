@@ -12,9 +12,8 @@ Objective: Get the most biscuits
 2. Each round consists of these steps:
     1. Random number of biscuits (1 - 13) is placed on the table as a prize
     2. Each player chooses one card
-    3. Player who choose higher card gets all of the biscuits
-        1. If both cards have the same value, cards are discarded and prize increases
-    4. Chosen cards are discarded
+    3. Player who choose a higher card gets all of the biscuits and the cards are discarded
+        1. If both cards have the same value, number of biscuits increases
 
 ## Controls
 
