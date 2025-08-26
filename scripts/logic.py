@@ -7,7 +7,7 @@ from scripts.utils import load_image, spread_pos
 class Opponent:
     def __init__(self):
         self.deck = range(1, 14)
-        self.mode = 'inc'
+        self.mode = 'rand'
 
     def choose_card(self, card):
         if self.mode == 'rand':
@@ -34,11 +34,11 @@ class Biscuits:
         self.pos = []
         if self.value <= 13:
             for i in range(self.value):
-                self.pos.append((spread_pos(self.value, i), random.randint(1, 5)))
+                self.pos.append((spread_pos(self.value, i), random.randint(1, 5) + 50 - self.image.get_height() * 0.5))
         elif self.value <= 26:
-            for r, spread in enumerate([self.value // 2, self.value - self.value // 2]):
+            for r, spread in enumerate([self.value - self.value // 2, self.value // 2]):
                 for i in range(spread):
-                    self.pos.append((spread_pos(spread, i), random.randint(1, 5) + r * 25))
+                    self.pos.append((spread_pos(spread, i), random.randint(1, 5) + 50 - self.image.get_height() * 0.75 + r * 26))
         else:
             rows = (self.value - 1) // 13 + 1
             tmp = self.value
@@ -49,7 +49,7 @@ class Biscuits:
                 else:
                     spread = tmp
                 for i in range(spread):
-                    self.pos.append((spread_pos(spread, i), random.randint(1, 5) + r * 25))
+                    self.pos.append((spread_pos(spread, i), random.randint(1, 5) + 10 + r * 26))
         self.frame = 0
         self.biscuits = [b for b in self.biscuits if b != new_value]
         return new_value
