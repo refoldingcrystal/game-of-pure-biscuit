@@ -32,6 +32,17 @@ Press enter to accept your choice
 
     > `python3 game.py`
 
+## Todo
+
+- Change card sprites for AKQJ
+- Menu
+- Particles in duels
+- Winning round animation
+- Clever bot AI
+- Difficulties choice
+- Holding arrows to quickly change cards
+- Transitions
+
 ## Credits
 
 Card sprites drawn by [Aspecs Ganimg](https://aspecsgaming.itch.io/mini-pixel-playing-cards)
