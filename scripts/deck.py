@@ -51,7 +51,8 @@ class Deck:
                     c.pos = [spread_pos(len(self.cards), j), c.pos[1]]
                 if not len(self.cards):
                     return choosen_card
-                self.selected = (self.selected - 1) % len(self.cards)
+                if self.selected >= len(self.cards):
+                    self.selected -= 1
             else:
                 i += 1
         return choosen_card

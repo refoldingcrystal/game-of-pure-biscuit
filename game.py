@@ -63,7 +63,7 @@ class Game:
                     # Render deck + UI
                     self.choosen_card = self.deck.render(self.display)
                     if self.prize == 0:
-                        self.prize = self.biscuits.randomize_biscuits() + self.next_round_biscuits
+                        self.prize = self.biscuits.randomize_biscuits(self.next_round_biscuits) + self.next_round_biscuits
                     self.biscuits.render(self.display)
                     if self.choosen_card:
                         self.next_round_biscuits = 0

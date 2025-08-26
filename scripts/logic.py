@@ -29,13 +29,31 @@ class Biscuits:
         self.frame = 0
 
 
-    def randomize_biscuits(self):
-        value = random.choice(self.biscuits)
-        self.value = value
-        self.pos = [(spread_pos(value, i), random.randint(1, 5) + 50) for i in range(value)]
+    def randomize_biscuits(self, old_biscuits):
+        new_value = random.choice(self.biscuits)
+        self.value = new_value + old_biscuits
+        self.pos = []
+        if self.value <= 13:
+            for i in range(self.value):
+                self.pos.append((spread_pos(self.value, i), random.randint(1, 5)))
+        elif self.value <= 26:
+            for r, spread in enumerate([self.value // 2, self.value - self.value // 2]):
+                for i in range(spread):
+                    self.pos.append((spread_pos(spread, i), random.randint(1, 5) + r * 25))
+        else:
+            rows = (self.value - 1) // 13 + 1
+            tmp = self.value
+            for r in range(rows):
+                if tmp > 13:
+                    spread = 13
+                    tmp -= 13
+                else:
+                    spread = tmp
+                for i in range(spread):
+                    self.pos.append((spread_pos(spread, i), random.randint(1, 5) + r * 25))
         self.frame = 0
-        self.biscuits = [b for b in self.biscuits if b != value]
-        return value
+        self.biscuits = [b for b in self.biscuits if b != new_value]
+        return new_value
     
     # def update(self):
     #     self.fra
