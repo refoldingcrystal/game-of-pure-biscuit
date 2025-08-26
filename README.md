@@ -34,7 +34,6 @@ Press enter to accept your choice
 
 ## Todo
 
-- Change card sprites for AKQJ
 - Menu
 - Particles in duels
 - Winning round animation
