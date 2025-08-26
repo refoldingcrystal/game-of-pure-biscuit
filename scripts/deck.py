@@ -50,9 +50,11 @@ class Deck:
                 for j, c in enumerate(self.cards):
                     c.pos = [spread_pos(len(self.cards), j), c.pos[1]]
                 if not len(self.cards):
-                    return choosen_card
+                    return 60, choosen_card
                 if self.selected >= len(self.cards):
                     self.selected -= 1
             else:
                 i += 1
-        return choosen_card
+        if choosen_card:
+            return 60, choosen_card    
+        return 0, choosen_card

@@ -31,6 +31,7 @@ class Game:
         self.paused = False
         self.next_round_biscuits = 0
         self.prize = 0
+        self.timeout = 0
 
     def run(self):
         while True:
@@ -55,21 +56,25 @@ class Game:
 
             if not self.paused:
                 if self.choosen_card:
-                    # Render duel
-                    if self.duel.update():
-                        self.choosen_card = None
-                    self.duel.render(self.display)
+                    if self.timeout:
+                        # Render transition
+                        self.timeout -= 1
+                    else:
+                        # Render duel
+                        if self.duel.update():
+                            self.choosen_card = None
+                        self.duel.render(self.display)
                 else:
                     # Render deck + UI
-                    self.choosen_card = self.deck.render(self.display)
+                    self.timeout, self.choosen_card = self.deck.render(self.display)
                     if self.prize == 0:
                         self.prize = self.biscuits.randomize_biscuits(self.next_round_biscuits) + self.next_round_biscuits
                     self.biscuits.render(self.display)
                     if self.choosen_card:
                         self.next_round_biscuits = 0
                         self.duel = Duel(self.choosen_card,
-                                         self.opponent.choose_card(self.choosen_card),
-                                         self.prize, self.particles)
+                                        self.opponent.choose_card(self.choosen_card),
+                                        self.prize, self.particles)
                         if self.duel.result(self.scores):
                             print(self.scores.score, self.scores.opp_score)
                         else:
