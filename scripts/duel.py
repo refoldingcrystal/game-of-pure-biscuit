@@ -9,7 +9,6 @@ class Duel:
         self.card = load_image(f'cards/{str(card)}-P.png', scale=2)
         self.opp_card = load_image(f'cards/{str(opp_card)}-D.png', scale=2)
         self.prize = biscuits
-        print(f'biscuits {self.prize}')
         self.frame = 0
 
         self.pos = 50

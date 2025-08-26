@@ -20,7 +20,6 @@ class Opponent:
 class Biscuits:
     def __init__(self):
         self.biscuits = list(range(1, 14))
-        print(self.biscuits)
         self.image = load_image('biscuit.png', scale=20)
         self.shadow = self.image.copy()
         self.shadow.fill((0, 0, 0, 70), special_flags=pygame.BLEND_RGBA_MULT)
@@ -54,9 +53,6 @@ class Biscuits:
         self.frame = 0
         self.biscuits = [b for b in self.biscuits if b != new_value]
         return new_value
-    
-    # def update(self):
-    #     self.fra
     
     def render(self, surf):
         for pos in self.pos:
