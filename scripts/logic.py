@@ -1,4 +1,7 @@
 import random
+import pygame
+
+from scripts.utils import load_image, spread_pos
 
 
 class Opponent:
@@ -16,12 +19,31 @@ class Opponent:
     
 class Biscuits:
     def __init__(self):
-        self.biscuits = range(1, 14)
+        self.biscuits = list(range(1, 14))
+        print(self.biscuits)
+        self.image = load_image('biscuit.png', scale=20)
+        self.shadow = self.image.copy()
+        self.shadow.fill((0, 0, 0, 70), special_flags=pygame.BLEND_RGBA_MULT)
+        self.value = 0
+        self.pos = []
+        self.frame = 0
+
 
     def randomize_biscuits(self):
-        value = random.choice(list(self.biscuits))
+        value = random.choice(self.biscuits)
+        self.value = value
+        self.pos = [(spread_pos(value, i), random.randint(1, 5) + 50) for i in range(value)]
+        self.frame = 0
         self.biscuits = [b for b in self.biscuits if b != value]
         return value
+    
+    # def update(self):
+    #     self.fra
+    
+    def render(self, surf):
+        for pos in self.pos:
+            surf.blit(self.shadow, (pos[0] - 3, pos[1] + 3))
+            surf.blit(self.image, pos)
 
 class Scores:
     def __init__(self, font):

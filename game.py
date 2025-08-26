@@ -3,7 +3,7 @@ import pygame
 from scripts.duel import Duel
 from scripts.deck import Deck
 from scripts.logic import Biscuits, Opponent, Scores
-from scripts.utils import Background, PauseMenu, close
+from scripts.utils import Background, Title, close
 
 class Game:
     def __init__(self):
@@ -17,7 +17,7 @@ class Game:
         self.font = pygame.font.Font("font/jersey.ttf", 40)
         self.font_small = pygame.font.Font("font/jersey.ttf", 20)
 
-        self.pause_menu = PauseMenu(self.font_small)
+        self.title = Title()
         self.background = Background()
         self.scores = Scores(self.font)
         self.deck = Deck()
@@ -30,6 +30,7 @@ class Game:
 
         self.paused = False
         self.next_round_biscuits = 0
+        self.prize = 0
 
     def run(self):
         while True:
@@ -43,7 +44,8 @@ class Game:
                         if event.key == pygame.K_LEFT:
                             self.deck.change_selected(-1)
                         if event.key == pygame.K_RETURN:
-                            self.deck.select()
+                            if not self.choosen_card:
+                                self.deck.select()
                         if event.key == pygame.K_ESCAPE:
                             self.paused = True
                     else:
@@ -60,18 +62,20 @@ class Game:
                 else:
                     # Render deck + UI
                     self.choosen_card = self.deck.render(self.display)
+                    if self.prize == 0:
+                        self.prize = self.biscuits.randomize_biscuits() + self.next_round_biscuits
+                    self.biscuits.render(self.display)
                     if self.choosen_card:
-                        print("old biscuits", self.next_round_biscuits)
-                        biscuits = self.biscuits.randomize_biscuits() + self.next_round_biscuits
                         self.next_round_biscuits = 0
                         self.duel = Duel(self.choosen_card,
                                          self.opponent.choose_card(self.choosen_card),
-                                         biscuits, self.particles)
+                                         self.prize, self.particles)
                         if self.duel.result(self.scores):
                             print(self.scores.score, self.scores.opp_score)
                         else:
-                            self.next_round_biscuits = biscuits
+                            self.next_round_biscuits = self.prize
                             print("tie!")
+                        self.prize = 0
                     
                     self.scores.render(self.display)
 
@@ -82,7 +86,7 @@ class Game:
                         self.particles.remove(p)
             else:
                 # Paused menu
-                self.pause_menu.render(self.display)
+                self.title.render(self.display)
 
             self.screen.blit(pygame.transform.scale(self.display, self.screen.get_size()), (0, 0))
             pygame.display.update()

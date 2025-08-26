@@ -1,12 +1,5 @@
-from scripts.utils import load_image
+from scripts.utils import load_image, spread_pos
 
-
-def card_pos(total, i):
-    card_width = 38
-    width = 320
-    total_width = (total + 1) * card_width / 2
-    start = (width - total_width) / 2
-    return start + (card_width / 2) * i
 
 class Card:
     def __init__(self, value, pos):
@@ -33,7 +26,7 @@ class Deck:
         self.cards = []
         card_count = 13
         for i in range(card_count):
-            self.cards.append(Card(i + 1, card_pos(card_count, i)))
+            self.cards.append(Card(i + 1, spread_pos(card_count, i)))
         self.selected = 0
         self.select_lock = False
 
@@ -55,7 +48,7 @@ class Deck:
                 self.select_lock = False
                 self.cards.remove(card)
                 for j, c in enumerate(self.cards):
-                    c.pos = [card_pos(len(self.cards), j), c.pos[1]]
+                    c.pos = [spread_pos(len(self.cards), j), c.pos[1]]
                 if not len(self.cards):
                     return choosen_card
                 self.selected = (self.selected - 1) % len(self.cards)
