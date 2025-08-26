@@ -28,7 +28,7 @@ class Game:
         self.duel = None
         self.particles = []
 
-        self.paused = False
+        self.paused = True
         self.next_round_biscuits = 0
         self.prize = 0
         self.timeout = 0
@@ -99,7 +99,7 @@ class Game:
                         self.particles.remove(p)
             else:
                 # Paused menu
-                self.title.render(self.display)
+                self.title.render(self.display, name='win')
 
             self.screen.blit(pygame.transform.scale(self.display, self.screen.get_size()), (0, 0))
             pygame.display.update()
