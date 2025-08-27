@@ -17,9 +17,10 @@ class Game:
         self.title = Title()
         self.background = Background()
         self.gameplay = Gameplay(self.display, self.font)
-        self.gameplay.new_game()
 
-        self.paused = True
+        self.slow = True
+        self.states = ['paused', 'game']
+        self.state = self.states[0]
         self.verdict = 'title'
 
     def run(self):
@@ -36,7 +37,7 @@ class Game:
                     rel_y = int(mouse_y * display_height / screen_height)
                     print(rel_x, rel_y)
                 if event.type == pygame.KEYDOWN:
-                    if not self.paused:
+                    if self.state == 'game':
                         if event.key == pygame.K_RIGHT:
                             self.gameplay.change_selected(1)
                         if event.key == pygame.K_LEFT:
@@ -44,17 +45,19 @@ class Game:
                         if event.key == pygame.K_RETURN:
                             self.gameplay.select()
                         if event.key == pygame.K_ESCAPE:
-                            self.paused = True
+                            self.state = 'paused'
                     else:
-                        self.paused = False
+                        self.state = 'game'
+                        self.gameplay.new_game(self.slow)
+                        
         
             self.background.render(self.display)
 
-            if not self.paused:
+            if self.state == 'game':
                 finish = self.gameplay.next()
                 if finish:
                     result = self.gameplay.result()
-                    self.paused = True
+                    self.state = 'paused'
                     self.verdict = 'win' if result else 'lose'
             else:
                 self.title.render(self.display, name=self.verdict)

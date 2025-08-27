@@ -26,9 +26,10 @@ class Biscuits:
         self.value = 0
         self.pos = []
         self.frame = 0
-
+        self.tray = None
 
     def randomize_biscuits(self, old_biscuits):
+        self.frame = 0
         new_value = random.choice(self.biscuits)
         self.value = new_value + old_biscuits
         self.pos = []
@@ -50,11 +51,23 @@ class Biscuits:
                     spread = tmp
                 for i in range(spread):
                     self.pos.append((spread_pos(spread, i), random.randint(1, 5) + 10 + r * 26))
+
         self.frame = 0
         self.biscuits = [b for b in self.biscuits if b != new_value]
+
+        self.tray = [[0, 0], [0, 0]]
+        self.tray[0] = [min(pos[0] for pos in self.pos), min(pos[1] for pos in self.pos)]
+        self.tray[1] = [max(pos[0] for pos in self.pos), max(pos[1] for pos in self.pos)]
+        self.tray[0][0] -= 12
+        self.tray[0][1] -= 12
+        self.tray[1][0] += self.image.get_width() - self.tray[0][0] + 12
+        self.tray[1][1] += self.image.get_height() - self.tray[0][1] + 12
         return new_value
     
     def render(self, surf):
+        if self.tray:
+            pygame.draw.rect(surf, (0x1e, 0x29, 0x2e), self.tray, border_radius=5)
+            pygame.draw.rect(surf, (0x0e, 0x19, 0x1e), self.tray, border_radius=5, width=3)
         for pos in self.pos:
             surf.blit(self.shadow, (pos[0] - 3, pos[1] + 3))
             surf.blit(self.image, pos)
@@ -67,6 +80,13 @@ class Scores:
         self.r_opp_score = 0
         self.font = font
         self.frame = 0
+
+    def ready(self):
+        if self.score == self.r_score and self.opp_score == self.r_opp_score:
+            if self.frame > 60:
+                return True
+            self.frame += 1
+            return False
 
     def result(self):
         return self.score >= self.opp_score

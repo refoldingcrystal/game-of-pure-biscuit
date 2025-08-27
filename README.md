@@ -39,8 +39,8 @@ Press enter to accept your choice
 - Winning round animation
 - Clever bot AI
 - Difficulties choice
-- Holding arrows to quickly change cards
-- Transitions
+- Fix pause menu
+- Test fast mode
 
 ## Credits
 

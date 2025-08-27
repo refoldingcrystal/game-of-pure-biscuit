@@ -6,10 +6,11 @@ from scripts.transition import Transition
 class Gameplay:
     def __init__(self, display, font):
         self.display = display
-        self.scores = Scores(font)
+        self.font = font
 
-    def new_game(self):
-        self.deck = Deck()
+    def new_game(self, slow=True):
+        self.scores = Scores(self.font)
+        self.deck = Deck(slow)
         self.opponent = Opponent()
         self.biscuits = Biscuits()
 
@@ -42,14 +43,16 @@ class Gameplay:
             self.duel.render(self.display)
         else:
             # Render deck + UI
+            self.biscuits.render(self.display)
             self.timeout, self.choosen_card = self.deck.render(self.display)
             if self.prize == 0:
                 self.round += 1
                 if self.round > 13:
-                    return True
+                    if self.scores.ready():
+                        return True
+                    return False
                 self.prize = self.biscuits.randomize_biscuits(self.next_round_biscuits) + self.next_round_biscuits
             self.scores.render(self.display)
-            self.biscuits.render(self.display)
             if self.timeout:
                 screenshot = self.display.copy()
                 self.transition = Transition(self.display, screenshot)

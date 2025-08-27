@@ -4,7 +4,8 @@ from scripts.utils import load_image, spread_pos
 
 
 class Card:
-    def __init__(self, value, pos):
+    def __init__(self, value, pos, slow):
+        self.slow = slow
         self.swipe = pygame.mixer.Sound('sfx/swipe.mp3')
         self.value = value
         self.image = load_image(f'cards/{str(value + 1)}-P.png')
@@ -13,16 +14,19 @@ class Card:
     def update(self, selected=None, move=False):
         if selected:
             if move:
-                self.pos[1] -= 10
+                self.pos[1] -= (10 + (not self.slow) * 10)
                 if self.pos[1] < -70:
                     return True
             else:
                 self.pos[1] = max(self.pos[1] - 3, 110)
         else:
             if self.pos[1] > 120:
-                if self.pos[1] <= 125:
-                    self.swipe.play()
-                self.pos[1] -= 5
+                if self.slow:
+                    if self.pos[1] <= 125:
+                        self.swipe.play()
+                    self.pos[1] -= 5
+                else:
+                    self.pos[1] = 120
             else:
                 self.pos[1] = min(self.pos[1] + 3, 120)
 
@@ -30,12 +34,13 @@ class Card:
         surf.blit(self.image, self.pos)
 
 class Deck:
-    def __init__(self):
+    def __init__(self, slow=True):
+        self.slow = slow
         self.swipe = pygame.mixer.Sound('sfx/swipe.mp3')
         self.cards = []
         card_count = 13
         for i in range(card_count):
-            self.cards.append(Card(i + 1, spread_pos(card_count, i)))
+            self.cards.append(Card(i + 1, spread_pos(card_count, i), self.slow))
         self.selected = 0
         self.select_lock = False
 
@@ -63,11 +68,11 @@ class Deck:
                 for j, c in enumerate(self.cards):
                     c.pos = [spread_pos(len(self.cards), j), c.pos[1]]
                 if not len(self.cards):
-                    return 60, choosen_card
+                    return 60 * self.slow + 1, choosen_card
                 if self.selected >= len(self.cards):
                     self.selected -= 1
             else:
                 i += 1
         if choosen_card:
-            return 60, choosen_card    
+            return 60 * self.slow + 1, choosen_card    
         return 0, choosen_card
