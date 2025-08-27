@@ -1,7 +1,8 @@
+import pygame
 from scripts.deck import Deck
 from scripts.duel import Duel
 from scripts.logic import Biscuits, Opponent, Scores
-
+from scripts.transition import Transition
 
 class Gameplay:
     def __init__(self, display, font):
@@ -15,6 +16,7 @@ class Gameplay:
 
         self.choosen_card = None
         self.duel = None
+        self.transition = None
         self.particles = []
 
         self.next_round_biscuits = 0
@@ -35,14 +37,10 @@ class Gameplay:
 
     def next(self):
         if self.choosen_card:
-            if self.timeout:
-                # Render transition
-                self.timeout -= 1
-            else:
-                # Render duel
-                if self.duel.update():
-                    self.choosen_card = None
-                self.duel.render(self.display)
+            # Render duel
+            if self.duel.update():
+                self.choosen_card = None
+            self.duel.render(self.display)
         else:
             # Render deck + UI
             self.timeout, self.choosen_card = self.deck.render(self.display)
@@ -52,6 +50,10 @@ class Gameplay:
                     return True
                 self.prize = self.biscuits.randomize_biscuits(self.next_round_biscuits) + self.next_round_biscuits
             self.biscuits.render(self.display)
+            self.scores.render(self.display)
+            if self.timeout:
+                screenshot = self.display.copy()
+                self.transition = Transition(self.display, screenshot)
             if self.choosen_card:
                 self.next_round_biscuits = 0
                 self.duel = Duel(self.choosen_card,
@@ -64,12 +66,16 @@ class Gameplay:
                     print("tie!")
                 self.prize = 0
             
-            self.scores.render(self.display)
 
         for p in self.particles.copy():
             p.render(self.display)
             kill = p.update()
             if kill:
                 self.particles.remove(p)
+
+        if self.timeout:
+            # Render transition
+            self.transition.render(self.timeout)
+            self.timeout -= 1
         
         return False
