@@ -1,6 +1,63 @@
+from scripts.deck import Deck
+from scripts.duel import Duel
+from scripts.logic import Biscuits, Opponent, Scores
+
+
 class Gameplay:
-    def __init__(self):
-        pass
+    def __init__(self, display, font):
+        self.display = display
+        self.scores = Scores(font)
+        self.deck = Deck()
+        self.opponent = Opponent()
+        self.biscuits = Biscuits()
+
+        self.choosen_card = None
+        self.duel = None
+        self.particles = []
+
+        self.next_round_biscuits = 0
+        self.prize = 0
+        self.timeout = 0
+
+    def select(self):
+        if not self.choosen_card:
+            self.deck.select()
+    
+    def change_selected(self, movement):
+        self.deck.change_selected(movement)
 
     def next(self):
-        pass
+        if self.choosen_card:
+            if self.timeout:
+                # Render transition
+                self.timeout -= 1
+            else:
+                # Render duel
+                if self.duel.update():
+                    self.choosen_card = None
+                self.duel.render(self.display)
+        else:
+            # Render deck + UI
+            self.timeout, self.choosen_card = self.deck.render(self.display)
+            if self.prize == 0:
+                self.prize = self.biscuits.randomize_biscuits(self.next_round_biscuits) + self.next_round_biscuits
+            self.biscuits.render(self.display)
+            if self.choosen_card:
+                self.next_round_biscuits = 0
+                self.duel = Duel(self.choosen_card,
+                                self.opponent.choose_card(self.choosen_card),
+                                self.prize, self.particles)
+                if self.duel.result(self.scores):
+                    print(self.scores.score, self.scores.opp_score)
+                else:
+                    self.next_round_biscuits = self.prize
+                    print("tie!")
+                self.prize = 0
+            
+            self.scores.render(self.display)
+
+        for p in self.particles.copy():
+            p.render(self.display)
+            kill = p.update()
+            if kill:
+                self.particles.remove(p)
