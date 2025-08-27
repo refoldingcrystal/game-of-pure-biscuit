@@ -5,9 +5,10 @@ from scripts.utils import load_image, spread_pos
 
 class Card:
     def __init__(self, value, pos):
+        self.swipe = pygame.mixer.Sound('sfx/swipe.mp3')
         self.value = value
-        self.image = load_image(f'cards/{str(value)}-P.png')
-        self.pos = [pos, 120]
+        self.image = load_image(f'cards/{str(value + 1)}-P.png')
+        self.pos = [pos, 120 + self.image.get_height() * (value + 1) // 2]
 
     def update(self, selected=None, move=False):
         if selected:
@@ -16,9 +17,14 @@ class Card:
                 if self.pos[1] < -70:
                     return True
             else:
-                self.pos[1] = max(self.pos[1] - 3, 100)
+                self.pos[1] = max(self.pos[1] - 3, 110)
         else:
-            self.pos[1] = min(self.pos[1] + 3, 120)
+            if self.pos[1] > 120:
+                if self.pos[1] <= 125:
+                    self.swipe.play()
+                self.pos[1] -= 5
+            else:
+                self.pos[1] = min(self.pos[1] + 3, 120)
 
     def render(self, surf):
         surf.blit(self.image, self.pos)
@@ -26,7 +32,6 @@ class Card:
 class Deck:
     def __init__(self):
         self.swipe = pygame.mixer.Sound('sfx/swipe.mp3')
-        self.swipe_long = pygame.mixer.Sound('sfx/swipe-long.mp3')
         self.cards = []
         card_count = 13
         for i in range(card_count):
@@ -39,21 +44,21 @@ class Deck:
             if len(self.cards) > 1:
                 self.swipe.set_volume(0.7 + 0.3 * random.random())
                 self.swipe.play()
+                self.swipe.set_volume(1.0)
                 self.selected = (self.selected + movement) % len(self.cards)
 
     def select(self):
         self.select_lock = True
-        self.swipe_long.play()
+        self.swipe.play()
 
     def render(self, surf):
         choosen_card = None
         i = 0
         for card in self.cards.copy():
-            kill = card.update(self.selected == i, self.select_lock)
             card.render(surf)
+            kill = card.update(self.selected == i, self.select_lock)
             if kill:
                 choosen_card = card.value
-                self.select_lock = False
                 self.cards.remove(card)
                 for j, c in enumerate(self.cards):
                     c.pos = [spread_pos(len(self.cards), j), c.pos[1]]

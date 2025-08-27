@@ -1,4 +1,3 @@
-import pygame
 from scripts.deck import Deck
 from scripts.duel import Duel
 from scripts.logic import Biscuits, Opponent, Scores
@@ -49,8 +48,8 @@ class Gameplay:
                 if self.round > 13:
                     return True
                 self.prize = self.biscuits.randomize_biscuits(self.next_round_biscuits) + self.next_round_biscuits
-            self.biscuits.render(self.display)
             self.scores.render(self.display)
+            self.biscuits.render(self.display)
             if self.timeout:
                 screenshot = self.display.copy()
                 self.transition = Transition(self.display, screenshot)
@@ -77,5 +76,8 @@ class Gameplay:
             # Render transition
             self.transition.render(self.timeout)
             self.timeout -= 1
+            if not self.timeout:
+                self.deck.select_lock = False
+            
         
         return False

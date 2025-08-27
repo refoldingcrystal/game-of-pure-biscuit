@@ -7,7 +7,7 @@ from scripts.utils import load_image, spread_pos
 class Opponent:
     def __init__(self):
         self.deck = range(1, 14)
-        self.mode = 'rand'
+        self.mode = 'inc'
 
     def choose_card(self, card):
         if self.mode == 'rand':
@@ -34,11 +34,11 @@ class Biscuits:
         self.pos = []
         if self.value <= 13:
             for i in range(self.value):
-                self.pos.append((spread_pos(self.value, i), random.randint(1, 5) + 50 - self.image.get_height() * 0.5))
+                self.pos.append((spread_pos(self.value, i), random.randint(1, 5) + 55 - self.image.get_height() * 0.5))
         elif self.value <= 26:
             for r, spread in enumerate([self.value - self.value // 2, self.value // 2]):
                 for i in range(spread):
-                    self.pos.append((spread_pos(spread, i), random.randint(1, 5) + 50 - self.image.get_height() * 0.75 + r * 26))
+                    self.pos.append((spread_pos(spread, i), random.randint(1, 5) + 55 - self.image.get_height() * 0.75 + r * 26))
         else:
             rows = (self.value - 1) // 13 + 1
             tmp = self.value
@@ -62,17 +62,31 @@ class Biscuits:
 class Scores:
     def __init__(self, font):
         self.score = 0
+        self.r_score = 0
         self.opp_score = 0
+        self.r_opp_score = 0
         self.font = font
+        self.frame = 0
 
     def result(self):
         return self.score >= self.opp_score
 
+    def update(self):
+        if self.score != self.r_score:
+            if self.frame % 10:
+                self.r_score += 1
+            self.frame += 1
+        elif self.opp_score != self.r_opp_score:
+            if self.frame % 10:
+                self.r_opp_score += 1
+            self.frame += 1
+
     def render(self, surf):
-        text = self.font.render(str(self.score), False, (255, 255, 255))
+        self.update()
+        text = self.font.render(str(self.r_score), False, (255, 255, 255))
         rect = text.get_rect()
         rect.left = 12
-        opp_text = self.font.render(str(self.opp_score), False, (255, 255, 255))
+        opp_text = self.font.render(str(self.r_opp_score), False, (255, 255, 255))
         opp_rect = opp_text.get_rect()
         opp_rect.right = 308
         pygame.draw.rect(surf, (0x2d, 0x3b, 0x77), (rect.left - 6, rect.top + 7, rect.width + 10, rect.height - 12), border_radius=5)

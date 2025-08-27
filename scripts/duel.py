@@ -6,8 +6,8 @@ class Duel:
         self.particles = particles
         self.c = card
         self.oc = opp_card
-        self.card = load_image(f'cards/{str(card)}-P.png', scale=2)
-        self.opp_card = load_image(f'cards/{str(opp_card)}-D.png', scale=2)
+        self.card = load_image(f'cards/{str(card + 1)}-P.png', scale=2)
+        self.opp_card = load_image(f'cards/{str(opp_card + 1)}-D.png', scale=2)
         self.prize = biscuits
         self.frame = 0
 

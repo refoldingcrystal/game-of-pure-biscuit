@@ -1,9 +1,6 @@
 import pygame
 
-from scripts.duel import Duel
-from scripts.deck import Deck
 from scripts.gameplay import Gameplay
-from scripts.logic import Biscuits, Opponent, Scores
 from scripts.utils import Background, Title, close
 
 class Game:
@@ -22,7 +19,7 @@ class Game:
         self.gameplay = Gameplay(self.display, self.font)
         self.gameplay.new_game()
 
-        self.paused = False
+        self.paused = True
         self.verdict = 'title'
 
     def run(self):
@@ -56,7 +53,7 @@ class Game:
             if not self.paused:
                 finish = self.gameplay.next()
                 if finish:
-                    result = self.gameplay
+                    result = self.gameplay.result()
                     self.paused = True
                     self.verdict = 'win' if result else 'lose'
             else:
