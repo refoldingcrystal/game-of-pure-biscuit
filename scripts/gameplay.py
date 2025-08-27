@@ -19,6 +19,11 @@ class Gameplay:
         self.prize = 0
         self.timeout = 0
 
+        self.round = 0
+
+    def result(self):
+        return self.scores.result()
+
     def select(self):
         if not self.choosen_card:
             self.deck.select()
@@ -40,6 +45,9 @@ class Gameplay:
             # Render deck + UI
             self.timeout, self.choosen_card = self.deck.render(self.display)
             if self.prize == 0:
+                self.round += 1
+                if self.round > 13:
+                    return True
                 self.prize = self.biscuits.randomize_biscuits(self.next_round_biscuits) + self.next_round_biscuits
             self.biscuits.render(self.display)
             if self.choosen_card:
@@ -61,3 +69,5 @@ class Gameplay:
             kill = p.update()
             if kill:
                 self.particles.remove(p)
+        
+        return False

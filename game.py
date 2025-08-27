@@ -22,6 +22,7 @@ class Game:
         self.gameplay = Gameplay(self.display, self.font)
 
         self.paused = True
+        self.verdict = 'title'
 
     def run(self):
         while True:
@@ -52,9 +53,13 @@ class Game:
             self.background.render(self.display)
 
             if not self.paused:
-                self.gameplay.next()
+                finish = self.gameplay.next()
+                if finish:
+                    result = self.gameplay
+                    self.paused = True
+                    self.verdict = 'win' if result else 'lose'
             else:
-                self.title.render(self.display, name='title')
+                self.title.render(self.display, name=self.verdict)
 
             self.screen.blit(pygame.transform.scale(self.display, self.screen.get_size()), (0, 0))
             pygame.display.update()

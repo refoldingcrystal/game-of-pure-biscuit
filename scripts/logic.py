@@ -65,6 +65,9 @@ class Scores:
         self.opp_score = 0
         self.font = font
 
+    def result(self):
+        return self.score >= self.opp_score
+
     def render(self, surf):
         text = self.font.render(str(self.score), False, (0, 0, 0))
         opp_text = self.font.render(str(self.opp_score), False, (0, 0, 0))
