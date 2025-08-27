@@ -22,16 +22,12 @@ def load_image(path, scale=1):
 
 class Title:
     def __init__(self, height=17):
-        self.image = load_image('title.png', scale=5)
         self.images = {}
         self.shadows = {}
         for name in ['title', 'win', 'lose']:
             self.images[name] = load_image(f'{name}.png', scale=5)
             self.shadows[name] = self.images[name].copy()
             self.shadows[name].fill((0, 0, 0, 70), special_flags=pygame.BLEND_RGBA_MULT)
-
-        self.shadow = self.image.copy()
-        self.shadow.fill((0, 0, 0, 70), special_flags=pygame.BLEND_RGBA_MULT)
 
         self.biscuit = load_image('biscuit.png', scale=20)
         self.biscuit_shadow = self.biscuit.copy()
@@ -51,8 +47,11 @@ class Title:
         surf.blit(self.biscuit_shadow, (300 - self.biscuit_shadow.get_width() + math.sin(self.frame/60) * 5, self.height + 50))
         surf.blit(self.biscuit, (300 - self.biscuit.get_width(), self.height + 45))
 
-
         self.frame += 1
+
+class Menu:
+    def __init__(self):
+        pass
 
 class Background:
     def __init__(self):

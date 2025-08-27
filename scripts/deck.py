@@ -1,3 +1,5 @@
+import random
+import pygame
 from scripts.utils import load_image, spread_pos
 
 
@@ -23,6 +25,8 @@ class Card:
 
 class Deck:
     def __init__(self):
+        self.swipe = pygame.mixer.Sound('sfx/swipe.mp3')
+        self.swipe_long = pygame.mixer.Sound('sfx/swipe-long.mp3')
         self.cards = []
         card_count = 13
         for i in range(card_count):
@@ -32,10 +36,14 @@ class Deck:
 
     def change_selected(self, movement):
         if not self.select_lock:
-            self.selected = (self.selected + movement) % len(self.cards)
+            if len(self.cards) > 1:
+                self.swipe.set_volume(0.7 + 0.3 * random.random())
+                self.swipe.play()
+                self.selected = (self.selected + movement) % len(self.cards)
 
     def select(self):
         self.select_lock = True
+        self.swipe_long.play()
 
     def render(self, surf):
         choosen_card = None

@@ -7,6 +7,8 @@ class Gameplay:
     def __init__(self, display, font):
         self.display = display
         self.scores = Scores(font)
+
+    def new_game(self):
         self.deck = Deck()
         self.opponent = Opponent()
         self.biscuits = Biscuits()

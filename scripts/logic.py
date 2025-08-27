@@ -69,9 +69,13 @@ class Scores:
         return self.score >= self.opp_score
 
     def render(self, surf):
-        text = self.font.render(str(self.score), False, (0, 0, 0))
-        opp_text = self.font.render(str(self.opp_score), False, (0, 0, 0))
-        rect = opp_text.get_rect()
-        rect.right = 308
-        surf.blit(text, (12, 0))
-        surf.blit(opp_text, rect)
+        text = self.font.render(str(self.score), False, (255, 255, 255))
+        rect = text.get_rect()
+        rect.left = 12
+        opp_text = self.font.render(str(self.opp_score), False, (255, 255, 255))
+        opp_rect = opp_text.get_rect()
+        opp_rect.right = 308
+        pygame.draw.rect(surf, (0x2d, 0x3b, 0x77), (rect.left - 6, rect.top + 7, rect.width + 10, rect.height - 12), border_radius=5)
+        surf.blit(text, rect)
+        pygame.draw.rect(surf, (0x77, 0x2d, 0x40), (opp_rect.left - 6, opp_rect.top + 7, opp_rect.width + 10, opp_rect.height - 12), border_radius=5)
+        surf.blit(opp_text, opp_rect)

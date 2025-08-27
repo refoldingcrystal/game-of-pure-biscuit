@@ -20,8 +20,9 @@ class Game:
         self.title = Title()
         self.background = Background()
         self.gameplay = Gameplay(self.display, self.font)
+        self.gameplay.new_game()
 
-        self.paused = True
+        self.paused = False
         self.verdict = 'title'
 
     def run(self):
