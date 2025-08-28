@@ -37,6 +37,8 @@ Press enter to accept your choice
 - Particles
 - Gambler & Greenhorn bot
 - Gabler deck
+- Ghost biscuits
+
 ## Credits
 
 Card sprites drawn by [Aspecs Ganimg](https://aspecsgaming.itch.io/mini-pixel-playing-cards)

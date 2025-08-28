@@ -22,6 +22,8 @@ class Opponent:
             values.append(random.choice(list(self.deck)))
             value = random.choice(values)
         elif self.mode == 'expert':
+            value = random.choice(list(self.deck))
+        elif self.mode == 'impossible':
             if biscuits > 10:
                 if max(self.deck) < max(self.opp_deck):
                     value = min(self.deck)

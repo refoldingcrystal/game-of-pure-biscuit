@@ -8,7 +8,7 @@ class Menu:
         self.sound = pygame.mixer.Sound('sfx/button.mp3')
         self.sound_mature = pygame.mixer.Sound('sfx/button-mature.mp3')
         self.selected = 0
-        self.modes = ['greenhorn', 'normal', 'expert', 'gambler']
+        self.modes = ['greenhorn', 'normal', 'expert', 'hacker', 'gambler']
         self.images = {}
         self.shadows = {}
         for name in self.modes:
@@ -16,7 +16,7 @@ class Menu:
             self.shadows[name] = self.images[name].copy()
             self.shadows[name].fill((0, 0, 0, 50), special_flags=pygame.BLEND_RGBA_MULT)
 
-        self.height = 17
+        self.height = 15
         self.frame = 0
 
     def change_selected(self, movement):
