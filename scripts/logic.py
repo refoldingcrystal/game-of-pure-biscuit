@@ -26,6 +26,7 @@ class Opponent:
             # Gambler
             value = random.choice(list(self.deck))
         self.deck = [c for c in self.deck if c != value]
+        print(self.deck)
         return value
     
 class Biscuits:

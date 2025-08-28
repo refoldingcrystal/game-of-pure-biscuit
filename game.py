@@ -21,8 +21,6 @@ class Game:
         self.menu = Menu()
 
         self.slow = True
-        # TEMPORARY
-        self.gameplay.new_game(self.slow)
         self.states = ['paused', 'menu', 'game']
         self.state = self.states[0]
         self.verdict = 'title'
