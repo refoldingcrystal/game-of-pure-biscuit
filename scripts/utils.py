@@ -17,7 +17,7 @@ def close():
     sys.exit()
 
 def load_image(path, scale=1):
-    image = pygame.image.load(path).convert_alpha()
+    image = pygame.image.load(f'images/{path}').convert_alpha()
     return pygame.transform.scale(image, (image.get_width() // 5 * scale, image.get_height() // 5 * scale))
 
 class Title:
