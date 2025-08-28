@@ -14,6 +14,7 @@ class Game:
         self.clock = pygame.time.Clock()
         self.display = pygame.surface.Surface((320, 180))
         self.font = pygame.font.Font("font/jersey.ttf", 40)
+        self.sound = pygame.mixer.Sound('sfx/button-mature.mp3')
 
         self.title = Title()
         self.background = Background()
@@ -49,10 +50,12 @@ class Game:
                         if event.key == pygame.K_RETURN:
                             self.gameplay.select()
                         if event.key == pygame.K_ESCAPE:
+                            self.sound.play()
                             self.state = 'paused'
                             self.verdict = 'title'
                     elif self.state == 'paused':
                         # Pause
+                        self.sound.play()
                         if self.verdict != 'title' or self.first_time:
                             self.first_time = False
                             self.state = 'menu'

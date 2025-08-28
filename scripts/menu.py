@@ -5,6 +5,8 @@ from scripts.utils import load_image
 
 class Menu:
     def __init__(self):
+        self.sound = pygame.mixer.Sound('sfx/button.mp3')
+        self.sound_mature = pygame.mixer.Sound('sfx/button-mature.mp3')
         self.selected = 0
         self.modes = ['greenhorn', 'normal', 'expert', 'gambler']
         self.images = {}
@@ -18,9 +20,11 @@ class Menu:
         self.frame = 0
 
     def change_selected(self, movement):
+        self.sound.play()
         self.selected = (self.selected + movement) % len(self.modes)
 
     def select(self):
+        self.sound_mature.play()
         return self.modes[self.selected]
 
     def render(self, surf):
