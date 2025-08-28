@@ -29,9 +29,9 @@ class Title:
             self.shadows[name] = self.images[name].copy()
             self.shadows[name].fill((0, 0, 0, 50), special_flags=pygame.BLEND_RGBA_MULT)
 
-        self.biscuit = load_image('biscuit.png', scale=20)
-        self.biscuit_shadow = self.biscuit.copy()
-        self.biscuit_shadow.fill((0, 0, 0, 50), special_flags=pygame.BLEND_RGBA_MULT)
+        # self.biscuit = load_image('biscuit.png', scale=20)
+        # self.biscuit_shadow = self.biscuit.copy()
+        # self.biscuit_shadow.fill((0, 0, 0, 50), special_flags=pygame.BLEND_RGBA_MULT)
 
         self.height = height
         self.frame = 0
@@ -42,10 +42,10 @@ class Title:
         # surf.blit(self.shadow, (60 + math.sin(self.frame/60) * 5, self.height + 5))
         # surf.blit(self.image, (60, self.height))
 
-        surf.blit(self.biscuit_shadow, (20 + math.sin(self.frame/60) * 5, self.height + 50))
-        surf.blit(self.biscuit, (20, self.height + 45))
-        surf.blit(self.biscuit_shadow, (300 - self.biscuit_shadow.get_width() + math.sin(self.frame/60) * 5, self.height + 50))
-        surf.blit(self.biscuit, (300 - self.biscuit.get_width(), self.height + 45))
+        # surf.blit(self.biscuit_shadow, (20 + math.sin(self.frame/60) * 5, self.height + 50))
+        # surf.blit(self.biscuit, (20, self.height + 45))
+        # surf.blit(self.biscuit_shadow, (300 - self.biscuit_shadow.get_width() + math.sin(self.frame/60) * 5, self.height + 50))
+        # surf.blit(self.biscuit, (300 - self.biscuit.get_width(), self.height + 45))
 
         self.frame += 1
 

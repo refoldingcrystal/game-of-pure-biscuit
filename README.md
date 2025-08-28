@@ -34,11 +34,9 @@ Press enter to accept your choice
 
 ## Todo
 
-- Menu
 - Particles in duels
 - Winning round animation
 - Clever bot AI
-- Difficulties choice
 - Fix pause menu
 - Test fast mode
 
