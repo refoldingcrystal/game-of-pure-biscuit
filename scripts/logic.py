@@ -22,7 +22,35 @@ class Opponent:
             values.append(random.choice(list(self.deck)))
             value = random.choice(values)
         elif self.mode == 'expert':
-            value = random.choice(list(self.deck))
+            if biscuits > 13:
+                value = min(self.deck) if random.random() < 0.05 else max(self.deck)
+            if biscuits > 10:
+                if max(self.deck) < max(self.opp_deck):
+                    value = min(self.deck)
+                else:
+                    missing = []
+                    opp_missing = []
+                    if random.random() < 0.2:
+                        for x in range(1, 14):
+                            if x in self.deck and x not in self.opp_deck:
+                                opp_missing.append(x)
+                            if x not in self.deck and x in self.opp_deck:
+                                missing.append(x)
+                            if not len(missing) or max(opp_missing) < max(missing):
+                                value = min(self.deck)
+                            else:
+                                value = max(self.deck)
+                    else:
+                        value = max(self.deck)
+            else:
+                values = [value for value in self.deck if value >= biscuits][:2]
+                if values:
+                    value = random.choice(values)
+                else:
+                    value = min(self.deck)
+
+
+
         elif self.mode == 'impossible':
             if biscuits > 10:
                 if max(self.deck) < max(self.opp_deck):
