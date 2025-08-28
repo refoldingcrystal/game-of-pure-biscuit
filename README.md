@@ -35,8 +35,8 @@ Press enter to accept your choice
 ## Todo
 
 - Particles
-- Gambler & Greenhorn bot
-- Gabler deck
+- Gambler & Expert bot
+- Gambler deck
 - Ghost biscuits
 
 ## Credits
