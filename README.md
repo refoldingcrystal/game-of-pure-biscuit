@@ -36,8 +36,7 @@ Press enter to accept your choice
 
 - Particles
 - Gambler & Greenhorn bot
-- Pause & exit menu
-
+- Gabler deck
 ## Credits
 
 Card sprites drawn by [Aspecs Ganimg](https://aspecsgaming.itch.io/mini-pixel-playing-cards)

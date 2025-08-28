@@ -2,6 +2,7 @@ import pygame
 
 from scripts.gameplay import Gameplay
 from scripts.menu import Menu
+from scripts.pause import Pause
 from scripts.utils import Background, Title, close
 
 class Game:
@@ -20,6 +21,7 @@ class Game:
         self.background = Background()
         self.gameplay = Gameplay(self.display, self.font)
         self.menu = Menu()
+        self.pause = Pause()
 
         self.slow = True
         self.state = 'paused'
@@ -50,16 +52,30 @@ class Game:
                             self.gameplay.select()
                         if event.key == pygame.K_ESCAPE:
                             self.sound.play()
-                            self.state = 'paused'
-                            self.verdict = 'title'
+                            self.state = 'quit'
                     elif self.state == 'paused':
-                        # Pause
+                        # Endgame & launch
                         self.sound.play()
                         if self.verdict != 'title' or self.first_time:
                             self.first_time = False
                             self.state = 'menu'
                         else:
                             self.state = 'game'
+                    elif self.state == 'quit':
+                        # Quit menu
+                        if event.key == pygame.K_UP:
+                            self.pause.change_selected(-1)
+                        if event.key == pygame.K_DOWN:
+                            self.pause.change_selected(1)
+                        if event.key == pygame.K_RETURN:
+                            decision = self.pause.select()
+                            if decision == 'quit':
+                                close()
+                            elif decision == 'resume':
+                                self.state = 'game'
+                            else:
+                                self.state = 'menu'
+                            self.pause.selected = 0
                     else:
                         # Menu
                         if event.key == pygame.K_UP:
@@ -80,6 +96,8 @@ class Game:
                     self.verdict = 'win' if result else 'lose'
             elif self.state == 'paused':
                 self.title.render(self.display, name=self.verdict)
+            elif self.state == 'quit':
+                self.pause.render(self.display)
             else:
                 # Menu
                 self.menu.render(self.display)
