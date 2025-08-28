@@ -1,6 +1,7 @@
 import pygame
 
 from scripts.gameplay import Gameplay
+from scripts.menu import Menu
 from scripts.utils import Background, Title, close
 
 class Game:
@@ -17,11 +18,15 @@ class Game:
         self.title = Title()
         self.background = Background()
         self.gameplay = Gameplay(self.display, self.font)
+        self.menu = Menu()
 
         self.slow = True
-        self.states = ['paused', 'game']
+        # TEMPORARY
+        self.gameplay.new_game(self.slow)
+        self.states = ['paused', 'menu', 'game']
         self.state = self.states[0]
         self.verdict = 'title'
+        self.first_time = True
 
     def run(self):
         while True:
@@ -29,7 +34,7 @@ class Game:
                 if event.type == pygame.QUIT:
                     close()
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    # Only DEBUG !!
+                    # ONLY DEBUG
                     mouse_x, mouse_y = pygame.mouse.get_pos()
                     display_width, display_height = self.display.get_size()
                     screen_width, screen_height = self.screen.get_size()
@@ -38,6 +43,7 @@ class Game:
                     print(rel_x, rel_y)
                 if event.type == pygame.KEYDOWN:
                     if self.state == 'game':
+                        # Game
                         if event.key == pygame.K_RIGHT:
                             self.gameplay.change_selected(1)
                         if event.key == pygame.K_LEFT:
@@ -46,10 +52,23 @@ class Game:
                             self.gameplay.select()
                         if event.key == pygame.K_ESCAPE:
                             self.state = 'paused'
+                            self.verdict = 'title'
+                    elif self.state == 'paused':
+                        # Pause
+                        if self.verdict != 'title' or self.first_time:
+                            self.first_time = False
+                            self.state = 'menu'
+                        else:
+                            self.state = 'game'
                     else:
-                        self.state = 'game'
-                        self.gameplay.new_game(self.slow)
-                        
+                        # Menu
+                        if event.key == pygame.K_UP:
+                            self.menu.change_selected(-1)
+                        if event.key == pygame.K_DOWN:
+                            self.menu.change_selected(1)
+                        if event.key == pygame.K_RETURN:
+                            self.gameplay.new_game(difficulty=self.menu.select())                        
+                            self.state = 'game'
         
             self.background.render(self.display)
 
@@ -59,8 +78,11 @@ class Game:
                     result = self.gameplay.result()
                     self.state = 'paused'
                     self.verdict = 'win' if result else 'lose'
-            else:
+            elif self.state == 'paused':
                 self.title.render(self.display, name=self.verdict)
+            else:
+                # Menu
+                self.menu.render(self.display)
 
             self.screen.blit(pygame.transform.scale(self.display, self.screen.get_size()), (0, 0))
             pygame.display.update()

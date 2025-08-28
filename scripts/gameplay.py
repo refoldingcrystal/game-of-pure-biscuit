@@ -8,10 +8,10 @@ class Gameplay:
         self.display = display
         self.font = font
 
-    def new_game(self, slow=True):
+    def new_game(self, difficulty='normal', slow=True):
         self.scores = Scores(self.font)
         self.deck = Deck(slow)
-        self.opponent = Opponent()
+        self.opponent = Opponent(difficulty)
         self.biscuits = Biscuits()
 
         self.choosen_card = None
@@ -47,12 +47,11 @@ class Gameplay:
             self.timeout, self.choosen_card = self.deck.render(self.display)
             if self.prize == 0:
                 self.round += 1
-                if self.round > 13:
-                    if self.scores.ready():
-                        return True
-                    return False
-                self.prize = self.biscuits.randomize_biscuits(self.next_round_biscuits) + self.next_round_biscuits
+                if self.round <= 13:
+                    self.prize = self.biscuits.randomize_biscuits(self.next_round_biscuits) + self.next_round_biscuits
             self.scores.render(self.display)
+            if self.round > 13:
+                return self.scores.ready()
             if self.timeout:
                 screenshot = self.display.copy()
                 self.transition = Transition(self.display, screenshot)

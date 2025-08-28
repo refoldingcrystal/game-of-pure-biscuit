@@ -5,14 +5,17 @@ from scripts.utils import load_image, spread_pos
 
 
 class Opponent:
-    def __init__(self):
+    def __init__(self, difficulty):
         self.deck = range(1, 14)
-        self.mode = 'inc'
+        self.mode = difficulty
+        if self.mode not in {'greenhorn', 'normal'}:
+            self.mode = 'normal'
+        print(self.mode)
 
     def choose_card(self, card):
-        if self.mode == 'rand':
+        if self.mode == 'normal':
             value = random.choice(list(self.deck))
-        elif self.mode == 'inc':
+        elif self.mode == 'greenhorn':
             value = self.deck[0]
         self.deck = [c for c in self.deck if c != value]
         return value
@@ -83,7 +86,7 @@ class Scores:
 
     def ready(self):
         if self.score == self.r_score and self.opp_score == self.r_opp_score:
-            if self.frame > 60:
+            if self.frame > 180:
                 return True
             self.frame += 1
             return False
