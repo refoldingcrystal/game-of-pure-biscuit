@@ -1,3 +1,4 @@
+import random
 import pygame
 
 from scripts.gameplay import Gameplay
@@ -63,6 +64,10 @@ class Game:
                             self.state = 'game'
                     elif self.state == 'quit':
                         # Quit menu
+                        if event.key == pygame.K_ESCAPE:
+                            self.state = 'game'
+                            if random.random() < 0.02:
+                                pygame.mixer.Sound('sfx/meow.mp3').play()
                         if event.key == pygame.K_UP:
                             self.pause.change_selected(-1)
                         if event.key == pygame.K_DOWN:
