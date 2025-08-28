@@ -8,15 +8,23 @@ class Opponent:
     def __init__(self, difficulty):
         self.deck = range(1, 14)
         self.mode = difficulty
-        if self.mode not in {'greenhorn', 'normal'}:
+        if self.mode not in {'gambler', 'normal'}:
             self.mode = 'normal'
         print(self.mode)
 
-    def choose_card(self, card):
-        if self.mode == 'normal':
+    def choose_card(self, biscuits):
+        if self.mode == 'greenhorn':
+            pass
+        elif self.mode == 'normal':
+            value = min(self.deck, key=lambda x: abs(x - biscuits))
+            pos = list(self.deck).index(value)
+            if random.random() < 0.3 and 0 < pos < len(self.deck) - 1:
+                pos += random.choice([-1, 1])
+        elif self.mode == 'expert':
+            pass
+        else:
+            # Gambler
             value = random.choice(list(self.deck))
-        elif self.mode == 'greenhorn':
-            value = self.deck[0]
         self.deck = [c for c in self.deck if c != value]
         return value
     

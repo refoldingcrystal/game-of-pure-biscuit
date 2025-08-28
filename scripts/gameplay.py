@@ -58,7 +58,7 @@ class Gameplay:
             if self.choosen_card:
                 self.next_round_biscuits = 0
                 self.duel = Duel(self.choosen_card,
-                                self.opponent.choose_card(self.choosen_card),
+                                self.opponent.choose_card(self.prize),
                                 self.prize, self.particles)
                 if self.duel.result(self.scores):
                     print(self.scores.score, self.scores.opp_score)
