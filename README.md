@@ -34,11 +34,9 @@ Press enter to accept your choice
 
 ## Todo
 
-- Particles in duels
-- Winning round animation
-- Clever bot AI
-- Fix pause menu
-- Test fast mode
+- Particles
+- Gambler & Greenhorn bot
+- Pause & exit menu
 
 ## Credits
 

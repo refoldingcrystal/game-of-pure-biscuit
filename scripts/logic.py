@@ -7,25 +7,50 @@ from scripts.utils import load_image, spread_pos
 class Opponent:
     def __init__(self, difficulty):
         self.deck = range(1, 14)
+        self.opp_deck = range(1, 14)
         self.mode = difficulty
-        if self.mode == 'greenhorn':
-            self.mode = 'normal'
-        print(self.mode)
 
     def choose_card(self, biscuits, card):
         if self.mode == 'greenhorn':
-            pass
+            if biscuits > 13:
+                value = min(self.deck)
+            else:
+                values = sorted(self.deck, key=lambda x: abs(13 - biscuits - x))[:3]
+                value = random.choice(values)
         elif self.mode == 'normal':
             values = sorted(self.deck, key=lambda x: abs(x - biscuits))[:3]
             values.append(random.choice(list(self.deck)))
             value = random.choice(values)
         elif self.mode == 'expert':
-            values = sorted(self.deck, key=lambda x: abs(x - biscuits))[:3]
-            value = random.choice(values)
+            if biscuits > 10:
+                if max(self.deck) < max(self.opp_deck):
+                    value = min(self.deck)
+                else:
+                    missing = []
+                    opp_missing = []
+                    if card == max(self.deck):
+                        for x in range(1, 14):
+                            if x in self.deck and x not in self.opp_deck:
+                                opp_missing.append(x)
+                            if x not in self.deck and x in self.opp_deck:
+                                missing.append(x)
+                            if not len(missing) or max(opp_missing) < max(missing):
+                                value = min(self.deck)
+                            else:
+                                value = max(self.deck)
+                    else:
+                        value = max(self.deck)
+            else:
+                values = [value for value in self.deck if value >= biscuits][:2]
+                if values:
+                    value = random.choice(values)
+                else:
+                    value = min(self.deck)
         else:
             # Gambler
             value = random.choice(list(self.deck))
         self.deck = [c for c in self.deck if c != value]
+        self.opp_deck = [c for c in self.opp_deck if c != card]
         return value
     
 class Biscuits:

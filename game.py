@@ -8,8 +8,8 @@ class Game:
     def __init__(self):
         pygame.init()
 
-        # self.screen = pygame.display.set_mode((1280, 720), pygame.FULLSCREEN)
-        self.screen = pygame.display.set_mode((1280, 720))
+        self.screen = pygame.display.set_mode((1280, 720), pygame.FULLSCREEN)
+        # self.screen = pygame.display.set_mode((1280, 720))
         pygame.display.set_caption("Game of Pure Biscuit")
         self.clock = pygame.time.Clock()
         self.display = pygame.surface.Surface((320, 180))
@@ -22,8 +22,7 @@ class Game:
         self.menu = Menu()
 
         self.slow = True
-        self.states = ['paused', 'menu', 'game']
-        self.state = self.states[0]
+        self.state = 'paused'
         self.verdict = 'title'
         self.first_time = True
 
