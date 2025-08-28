@@ -35,7 +35,7 @@ Press enter to accept your choice
 ## Todo
 
 - Particles
-- Gambler & Expert bot
+- Expert bot
 - Gambler deck
 - Ghost biscuits
 
