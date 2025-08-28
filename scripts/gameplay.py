@@ -8,9 +8,9 @@ class Gameplay:
         self.display = display
         self.font = font
 
-    def new_game(self, difficulty='normal', slow=True):
+    def new_game(self, difficulty='normal'):
         self.scores = Scores(self.font)
-        self.deck = Deck(slow)
+        self.deck = Deck()
         self.opponent = Opponent(difficulty)
         self.biscuits = Biscuits()
 

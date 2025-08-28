@@ -38,6 +38,8 @@ Press enter to accept your choice
 - Expert bot
 - Gambler deck
 - Ghost biscuits
+- Duel description
+- Cards not moving
 
 ## Credits
 

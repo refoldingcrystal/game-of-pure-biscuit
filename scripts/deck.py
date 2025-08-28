@@ -4,8 +4,7 @@ from scripts.utils import load_image, spread_pos
 
 
 class Card:
-    def __init__(self, value, pos, slow):
-        self.slow = slow
+    def __init__(self, value, pos):
         self.swipe = pygame.mixer.Sound('sfx/swipe.mp3')
         self.value = value
         self.image = load_image(f'cards/{str(value + 1)}-P.png')
@@ -14,33 +13,27 @@ class Card:
     def update(self, selected=None, move=False):
         if selected:
             if move:
-                self.pos[1] -= (10 + (not self.slow) * 10)
+                self.pos[1] -= 10
                 if self.pos[1] < -70:
                     return True
             else:
                 self.pos[1] = max(self.pos[1] - 3, 110)
         else:
-            if self.pos[1] > 120:
-                if self.slow:
-                    if self.pos[1] <= 125:
-                        self.swipe.play()
-                    self.pos[1] -= 5
-                else:
-                    self.pos[1] = 120
-            else:
-                self.pos[1] = min(self.pos[1] + 3, 120)
+            self.pos[1] = min(self.pos[1] + 3, 120)
 
     def render(self, surf):
         surf.blit(self.image, self.pos)
 
 class Deck:
-    def __init__(self, slow=True):
-        self.slow = slow
+    def __init__(self, gamble=True):
+        self.gamble = gamble
         self.swipe = pygame.mixer.Sound('sfx/swipe.mp3')
         self.cards = []
         card_count = 13
+        self.values = list(range(1, 14))
+        random.shuffle(self.values)
         for i in range(card_count):
-            self.cards.append(Card(i + 1, spread_pos(card_count, i), self.slow))
+            self.cards.append(Card(self.values[i] if self.gamble else i + 1, spread_pos(card_count, i)))
         self.selected = 0
         self.select_lock = False
 
@@ -59,20 +52,23 @@ class Deck:
     def render(self, surf):
         choosen_card = None
         i = 0
-        for card in self.cards.copy():
+        for card in self.cards:
             card.render(surf)
+        for card in self.cards.copy():
             kill = card.update(self.selected == i, self.select_lock)
             if kill:
                 choosen_card = card.value
                 self.cards.remove(card)
+                if self.gamble:
+                    random.shuffle(self.cards)
                 for j, c in enumerate(self.cards):
                     c.pos = [spread_pos(len(self.cards), j), c.pos[1]]
                 if not len(self.cards):
-                    return 60 * self.slow + 1, choosen_card
+                    return 60, choosen_card
                 if self.selected >= len(self.cards):
                     self.selected -= 1
             else:
                 i += 1
         if choosen_card:
-            return 60 * self.slow + 1, choosen_card    
+            return 60, choosen_card    
         return 0, choosen_card

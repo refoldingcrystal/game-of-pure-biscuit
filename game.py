@@ -24,7 +24,6 @@ class Game:
         self.menu = Menu()
         self.pause = Pause()
 
-        self.slow = True
         self.state = 'paused'
         self.verdict = 'title'
         self.first_time = True
