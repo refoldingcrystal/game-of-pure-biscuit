@@ -35,7 +35,8 @@ Press enter to accept your choice
 ## Todo
 
 - Particles
-- Create executable
+- Create executable for windows
+- Update executable for linux
 
 ## Credits
 
