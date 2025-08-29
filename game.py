@@ -11,7 +11,6 @@ class Game:
         pygame.init()
 
         self.screen = pygame.display.set_mode((1280, 720), pygame.FULLSCREEN)
-        # self.screen = pygame.display.set_mode((1280, 720))
         pygame.display.set_caption("Game of Pure Biscuit")
         self.clock = pygame.time.Clock()
         self.display = pygame.surface.Surface((320, 180))
@@ -33,14 +32,6 @@ class Game:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     close()
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    # ONLY DEBUG
-                    mouse_x, mouse_y = pygame.mouse.get_pos()
-                    display_width, display_height = self.display.get_size()
-                    screen_width, screen_height = self.screen.get_size()
-                    rel_x = int(mouse_x * display_width / screen_width)
-                    rel_y = int(mouse_y * display_height / screen_height)
-                    print(rel_x, rel_y)
                 if event.type == pygame.KEYDOWN:
                     if self.state == 'game':
                         # Game
@@ -90,6 +81,7 @@ class Game:
                             self.gameplay.new_game(difficulty=self.menu.select())                        
                             self.state = 'game'
         
+            self.screen.fill((0x1e, 0x29, 0x2e))
             self.background.render(self.display)
 
             if self.state == 'game':
@@ -105,8 +97,16 @@ class Game:
             else:
                 # Menu
                 self.menu.render(self.display)
-
-            self.screen.blit(pygame.transform.scale(self.display, self.screen.get_size()), (0, 0))
+            
+            ratio = self.display.get_width() / self.display.get_height()
+            if ratio > self.screen.get_width() / self.screen.get_height():
+                width = self.screen.get_width()
+                height = int(width / ratio)
+            else:
+                height = self.screen.get_height()
+                width = int(height * ratio)
+            self.screen.blit(pygame.transform.scale(self.display, (width, height)),
+                             ((self.screen.get_width() - width) // 2, (self.screen.get_height() - height) // 2))
             pygame.display.update()
             self.clock.tick(60)
 

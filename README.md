@@ -35,7 +35,6 @@ Press enter to accept your choice
 ## Todo
 
 - Particles
-- Display scaling
 - Create executable
 
 ## Credits
