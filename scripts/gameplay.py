@@ -10,7 +10,7 @@ class Gameplay:
 
     def new_game(self, difficulty='normal'):
         self.scores = Scores(self.font)
-        self.deck = Deck()
+        self.deck = Deck(difficulty == 'gambler')
         self.opponent = Opponent(difficulty)
         self.biscuits = Biscuits()
 
