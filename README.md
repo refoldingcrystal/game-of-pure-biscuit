@@ -35,7 +35,8 @@ Press enter to accept your choice
 ## Todo
 
 - Particles
-- Duel description
+- Display scaling
+- Create executable
 
 ## Credits
 

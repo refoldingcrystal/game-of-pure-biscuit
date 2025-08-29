@@ -13,6 +13,9 @@ class Duel:
         self.oc = opp_card
         self.card = load_image(f'cards/{str(card + 1)}-P.png', scale=2)
         self.opp_card = load_image(f'cards/{str(opp_card + 1)}-D.png', scale=2)
+        self.result_images = {}
+        for name in ['winner', 'loser', 'tie']:
+            self.result_images[name] = load_image(f'{name}.png', scale=5)
         self.prize = biscuits
         self.frame = 0
 
@@ -59,6 +62,14 @@ class Duel:
         return False
 
     def render(self, surf):
+        if self.tie:
+                surf.blit(self.result_images['tie'], (surf.get_width() // 2 - 60, 10))
+        else:
+            if self.winner:
+                surf.blit(self.result_images['winner'], (surf.get_width() // 2 - 60, 10))
+            else:
+                surf.blit(self.result_images['loser'], (surf.get_width() // 2 - 60, 10))
+
         if self.winner:
             surf.blit(self.opp_card, (self.opp_pos, self.y_pos))
             surf.blit(self.card, (self.pos, self.y_pos))
