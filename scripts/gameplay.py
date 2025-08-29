@@ -43,12 +43,13 @@ class Gameplay:
             self.duel.render(self.display)
         else:
             # Render deck + UI
-            self.biscuits.render(self.display)
             self.timeout, self.choosen_card = self.deck.render(self.display)
             if self.prize == 0:
                 self.round += 1
                 if self.round <= 13:
                     self.prize = self.biscuits.randomize_biscuits(self.next_round_biscuits) + self.next_round_biscuits
+            if len(self.deck.cards):
+                self.biscuits.render(self.display)
             self.scores.render(self.display)
             if self.round > 13:
                 return self.scores.ready()

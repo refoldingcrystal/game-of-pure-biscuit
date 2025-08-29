@@ -35,8 +35,6 @@ Press enter to accept your choice
 ## Todo
 
 - Particles
-- Expert bot
-- Ghost biscuits
 - Duel description
 
 ## Credits

@@ -8,8 +8,7 @@ class Card:
         self.swipe = pygame.mixer.Sound('sfx/swipe.mp3')
         self.value = value
         self.image = load_image(f'cards/{str(value + 1)}-P.png')
-        if gamble:
-            self.back = load_image('cards/BACK.png')
+        self.back = load_image('cards/BACK.png')
         self.pos = [pos, 120 + self.image.get_height() * (value + 1) // 2]
 
     def update(self, selected=None, move=False):
@@ -42,7 +41,7 @@ class Deck:
         for i in range(card_count):
             self.cards.append(Card(self.values[i] if self.gamble else i + 1, spread_pos(card_count, i), gamble))
         self.hidden = [random.random() < 1 / len(self.cards) * random.randint(1, 3) for _ in self.cards]
-        self.selected = 0
+        self.selected = 6
         self.select_lock = False
 
     def change_selected(self, movement):
@@ -60,7 +59,7 @@ class Deck:
     def render(self, surf):
         choosen_card = None
         for i, card in enumerate(self.cards):
-            card.render(surf, self.hidden[i])
+            card.render(surf, self.hidden[i] if self.gamble else False)
         i = 0
         for card in self.cards.copy():
             kill = card.update(self.selected == i, self.select_lock)
