@@ -6,6 +6,7 @@ from scripts.utils import load_image, spread_pos
 
 class Opponent:
     def __init__(self, difficulty):
+        print(difficulty)
         self.deck = range(1, 14)
         self.opp_deck = range(1, 14)
         self.mode = difficulty
@@ -51,7 +52,7 @@ class Opponent:
 
 
 
-        elif self.mode == 'impossible':
+        elif self.mode == 'hacker':
             if biscuits > 10:
                 if max(self.deck) < max(self.opp_deck):
                     value = min(self.deck)
