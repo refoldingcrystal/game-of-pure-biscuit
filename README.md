@@ -32,12 +32,6 @@ Press enter to accept your choice
 
     > `python3 game.py`
 
-## Todo
-
-- Particles
-- Create executable for windows
-- Update executable for linux
-
 ## Credits
 
 Card sprites drawn by [Aspecs Ganimg](https://aspecsgaming.itch.io/mini-pixel-playing-cards)
