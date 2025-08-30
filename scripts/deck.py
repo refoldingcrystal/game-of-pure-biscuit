@@ -41,7 +41,7 @@ class Deck:
         for i in range(card_count):
             self.cards.append(Card(self.values[i] if self.gamble else i + 1, spread_pos(card_count, i), gamble))
         self.hidden = [random.random() < 1 / len(self.cards) * random.randint(1, 3) for _ in self.cards]
-        self.selected = 6
+        self.selected = 0
         self.select_lock = False
 
     def change_selected(self, movement):
