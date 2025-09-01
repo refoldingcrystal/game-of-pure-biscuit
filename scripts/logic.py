@@ -37,7 +37,7 @@ class Opponent:
                                 opp_missing.append(x)
                             if x not in self.deck and x in self.opp_deck:
                                 missing.append(x)
-                            if not len(missing) and max(opp_missing) < max(missing):
+                            if len(missing) and len(opp_missing) and max(opp_missing) < max(missing):
                                 value = min(self.deck)
                             else:
                                 value = max(self.deck)
